@@ -52,14 +52,6 @@ function showBanner() {
     setRandomPosition(banner);
     setRandomPosition(banner1);
     setRandomPosition(banner2);
-
-
-    setTimeout(() => {
-        banner1.classList.remove('show1');
-    }, 15500);
-    setTimeout(() => {
-        banner2.classList.remove('show2');
-    }, 5000);
 }
 
 
@@ -69,3 +61,5 @@ function setRandomPosition(el) {
     el.style.left = `${Math.random() * (window.innerWidth - el.offsetWidth)}px`;
     el.style.top = `${Math.random() * (window.innerHeight - el.offsetHeight)}px`;
 }
+
+
