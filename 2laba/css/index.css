@@ -106,28 +106,45 @@ button:active {
     }
 
     
-.review {
-        padding: 50px 40px;
+    .reviews-grid {
+        display: grid;
+        gap: 20px; 
+        padding: 20px;
+    }
+    
+    .review {
+        padding: 20px;
         background: rgba(200, 200, 200, 0.9);
         border-radius: 10px;
-        margin: 10px;
-        max-width: 500px;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
         text-align: center;
         animation: borderp 2s infinite ease-in-out;
     }
     
-.review p {
+    .review p {
         font-size: 18px;
         color: rgb(50, 50, 50);
+        margin-bottom: 10px;
     }
     
-.review span {
+    .review span {
         display: block;
         font-size: 14px;
         color: rgb(80, 80, 80);
+        font-style: italic;
     }
-
+    footer {
+        position: fixed;
+        font-size: 9px;
+        opacity: 0.3;
+        bottom: 0;
+        background: #525151;
+        color: rgb(255, 255, 255, 0.3);
+        text-align: center;
+        padding: 4px;
+        z-index: 10;
+    }
+    
 
 
 
@@ -150,11 +167,15 @@ button:active {
 }
 
 
-.prava {
-font-size: 5px;
-background-color: rgb(125, 125, 125);
-text-shadow: 2px 2px 4px rgb(23, 23, 23);
+
+.prava {    
+    background: #525151;
+    color: white;
+    text-align: center;
+    padding: 10px;
+
 }
+
 
 
 .banner {
@@ -267,6 +288,11 @@ img, .img_ {
         width: 100%; 
         max-width: 100%;
         margin: 10px 0;
+    }
+    .reviews-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 5px;
     }
 
 
