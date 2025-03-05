@@ -1,0 +1,220 @@
+@import url("reset.css");
+
+.cent {
+    text-align: center;
+    color: #ffd700;
+    -webkit-text-stroke: 1px #FFFFFF; 
+    text-stroke: 1px #b89d07;
+}
+.cent1 {
+    text-align: center;
+    color: rgb(249, 228, 42);
+    
+}
+
+.cent2 {
+    text-align: center;
+    color: rgb(4, 255, 0);
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
+    border: 4mm ridge rgba(10, 255, 38, 0.7);
+}
+.cent3 {
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+.cent4 {
+    text-align: center;
+    color: orange;
+}
+.border_st {
+    border-image: linear-gradient(to right, #3acfd5 30%, #3a4ed5 70%) 1;
+    border-radius: 5px;
+    border-width: 9px;
+    border-style: solid;
+    padding: 5px;
+    box-shadow: 10px 14px #227375;
+}
+
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+
+    border-radius: 40px;
+    width: 650px;
+    border-top: 7px solid rgb(43, 129, 17);
+    border-collapse: collapse;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #dddddd;
+
+}
+th {
+    text-align: center;
+    color: green;
+    
+    
+}
+td {
+    color:rgb(4, 0, 255)
+
+}
+
+
+ol > li {
+    font-size: 30px;
+    font-weight: bold;
+    font-size: italic;
+
+}
+
+
+.divv {
+    display: flex; justify-content: center; gap: 15px;
+}
+
+.link {
+    text-decoration: none;
+    color: #ff0000;
+    font-size: 50px;
+    font-weight: 900;
+    -webkit-text-stroke: 1px #FFFFFF; 
+    text-stroke: 1px #FFFFFF;
+}
+
+.top {
+    text-shadow: 1px 2px 3px #00ff37;
+    
+}
+
+
+
+.match {
+    display: flex;
+    color: rgb(0, 168, 225);
+    text-decoration: none;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.7s ease, text-shadow 0.7s ease;
+    padding: 2px;
+}
+
+.match:hover {
+  transform: scale(1.2);
+  text-shadow: 0 0 5px white, 0 0 30px white;
+  
+}
+
+
+  
+  
+
+
+
+@keyframes pulseBorder {
+    0% {
+        border: 5px solid rgb(242, 0, 255);
+        box-shadow: 0 0 10px rgb(242, 0, 255);
+    }
+    10% {
+        border: 5px solid rgb(0, 255, 255);
+        box-shadow: 0 0 10px rgb(0, 255, 255);
+    }
+    20% {
+        border: 5px solid rgb(255, 165, 0);
+        box-shadow: 0 0 10px rgb(255, 165, 0);
+    }
+    30% {
+        border: 5px solid rgb(0, 128, 0);
+        box-shadow: 0 0 10px rgb(0, 128, 0);
+    }
+    40% {
+        border: 5px solid rgb(75, 0, 130);
+        box-shadow: 0 0 10px rgb(75, 0, 130);
+    }
+    50% {
+        border: 5px solid rgb(38, 255, 0);
+        box-shadow: 0 0 10px rgb(38, 255, 0);
+    }
+    60% {
+        border: 5px solid rgb(255, 20, 147);
+        box-shadow: 0 0 10px rgb(255, 20, 147);
+    }
+    70% {
+        border: 5px solid rgb(0, 0, 255);
+        box-shadow: 0 0 10px rgb(0, 0, 255);
+    }
+    80% {
+        border: 5px solid rgb(255, 255, 0);
+        box-shadow: 0 0 10px rgb(255, 255, 0);
+    }
+    90% {
+        border: 5px solid rgb(128, 0, 128);
+        box-shadow: 0 0 10px rgb(128, 0, 128);
+    }
+    100% {
+        border: 5px solid rgb(255, 0, 0);
+        box-shadow: 0 0 10px rgb(255, 0, 0);
+    }
+}
+
+
+.pulsing-box {
+    animation: pulseBorder 0.3s infinite step-start;
+}
+
+@keyframes borderp {
+    0% {
+        box-shadow: 0 0 10px 2px rgba(255, 0, 0, 0.8);
+    }
+    50% {
+        box-shadow: 0 0 20px 4px rgba(0, 255, 0, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 10px 2px rgba(0, 17, 255, 0.8);
+    }
+}
+
+@keyframes borderf {
+    0% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 100% 100%;
+    }
+    100% {
+        background-position: 0% 0%; 
+    }
+}
+
+.anim_matrix {
+    padding: 60px;
+    border: 5px solid transparent ;
+    border-radius: 11px;
+    background: linear-gradient(32deg, red, orange, yellow, green, cyan, blue, purple, red);
+    background-size: 200% 100%;
+    animation: borderf 0.3s linear infinite, borderp 2s infinite ease-in-out;
+}
+
+
+
+button {
+    display: flex;
+    font-size: 1px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border: 5px solid transparent;
+    border-radius: 100px;
+    background: linear-gradient(32deg, red, orange, yellow, green, cyan, blue, purple, red);
+    background-size: 200% 100%;
+    animation: borderf 0.1s linear infinite, borderp 0.1s linear infinite;
+    margin: 0 auto;
+    display: block;
+}
+
+
+button:hover {
+    transform: scale(100);
+    box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.8);
+}
