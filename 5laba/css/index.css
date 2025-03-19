@@ -1,0 +1,177 @@
+@import url("reset.css");
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #292828;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.profile-photo {
+    
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-photo img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+.profile-photo input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+
+.header {
+    margin-bottom: 20px;
+}
+
+.block {
+    width: 100%;
+    margin: 15px 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.editable:hover {
+    background: #f0f0f0;
+    cursor: pointer;
+}
+
+button {
+    margin: 5px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.skill-btn {
+    padding: 2px 8px;
+    margin: 0 5px;
+    font-size: 12px;
+}
+
+input, textarea {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+}
+
+p, ul {
+    margin: 5px 0;
+}
+
+ul.skills-list {
+    padding: 0;
+    list-style: none;
+}
+
+ul.skills-list li {
+    margin: 5px 0;
+    padding: 5px;
+    background: #e9ecef;
+    border-radius: 3px;
+    transition: background 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul.skills-list li:hover {
+    background: #ced4da;
+}
+
+.description {
+    font-style: italic;
+    color: #666;
+}
+
+
+@media (max-width: 480px) {
+    body {
+        overflow-x: hidden; /* Убираем горизонтальный скролл */
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .container {
+        padding: 10px;
+        border-radius: 0px;
+    }
+
+    .profile-photo img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .block {
+        padding: 10px;
+        border-radius: 0px;
+    }
+
+    button {
+        width: 100%; 
+    }
+
+    input, textarea {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .skill-btn {
+        font-size: 10px;
+    }
+
+}
