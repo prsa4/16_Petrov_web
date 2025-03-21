@@ -5,7 +5,7 @@ class Block {
         this._content = content;
     }
 
-    getHTML() {
+    show() {
         return `
             <div class="block" data-id="${this._id}">
                 <h2>${this._title}</h2>
@@ -14,7 +14,7 @@ class Block {
         `;
     }
 
-    getEditHTML() {
+    edit() {
         return `
             <div class="block editable" data-id="${this._id}">
                 <input type="text" class="edit-title" value="${this._title}">
@@ -30,7 +30,7 @@ class ContactBlock extends Block {
         this._phone = phone;
     }
 
-    getHTML() {
+    show() {
         return `
             <div class="block" data-id="${this._id}">
                 <h2>${this._title}</h2>
@@ -40,7 +40,7 @@ class ContactBlock extends Block {
         `;
     }
 
-    getEditHTML() {
+    edit() {
         return `
             <div class="block editable" data-id="${this._id}">
                 <input type="text" class="edit-title" value="${this._title}">
@@ -71,14 +71,14 @@ class SkillsBlock extends Block {
             this._skills[skill] = skills[skill] !== undefined ? Math.min(Math.max(skills[skill], 0), 10) : 0;
         });
         this._totalPoints = 30;
-        this._usedPoints = this.calculateUsedPoints();
+        this._usedPoints = this.countPoints();
     }
 
-    calculateUsedPoints() {
+    countPoints() {
         return Object.values(this._skills).reduce((sum, value) => sum + value, 0);
     }
 
-    getHTML() {
+    show() {
         return `
             <div class="block" data-id="${this._id}">
                 <h2>${this._title}</h2>
@@ -89,8 +89,8 @@ class SkillsBlock extends Block {
                         <li title="${this._defaultSkills[skill] || 'Пользовательский навык'}">
                             ${skill}: ${points}
                             ${this.isEditMode ? `
-                                <button class="skill-btn" onclick="pageManager.updateSkill('${this._id}', '${skill}', -1)">-</button>
-                                <button class="skill-btn" onclick="pageManager.updateSkill('${this._id}', '${skill}', 1)">+</button>
+                                <button class="skill-btn" onclick="pageManager.changeSkill('${this._id}', '${skill}', -1)">-</button>
+                                <button class="skill-btn" onclick="pageManager.changeSkill('${this._id}', '${skill}', 1)">+</button>
                             ` : ''}
                         </li>
                     `).join('')}
@@ -99,7 +99,7 @@ class SkillsBlock extends Block {
         `;
     }
 
-    getEditHTML() {
+    edit() {
         return `
             <div class="block editable" data-id="${this._id}">
                 <input type="text" class="edit-title" value="${this._title}">
@@ -109,8 +109,8 @@ class SkillsBlock extends Block {
                     ${Object.entries(this._skills).map(([skill, points]) => `
                         <li title="${this._defaultSkills[skill] || 'Пользовательский навык'}">
                             ${skill}: ${points}
-                            <button class="skill-btn" onclick="pageManager.updateSkill('${this._id}', '${skill}', -1)">-</button>
-                            <button class="skill-btn" onclick="pageManager.updateSkill('${this._id}', '${skill}', 1)">+</button>
+                            <button class="skill-btn" onclick="pageManager.changeSkill('${this._id}', '${skill}', -1)">-</button>
+                            <button class="skill-btn" onclick="pageManager.changeSkill('${this._id}', '${skill}', 1)">+</button>
                         </li>
                     `).join('')}
                 </ul>
@@ -119,7 +119,7 @@ class SkillsBlock extends Block {
     }
 }
 
-const zodiacPredictions = [
+const zodiacPred = [
     "Сегодня удача на вашей стороне!",
     "Будьте осторожны с новыми знакомствами.",
     "Вас ждёт неожиданный поворот событий.",
@@ -132,12 +132,12 @@ class ZodiacBlock extends Block {
     constructor(id, title, content, date) {
         super(id, title, content);
         this._date = date ? new Date(date) : new Date();
-        this._sign = getZodiacSign(this._date);
-        this._prediction = zodiacPredictions[Math.floor(Math.random() * zodiacPredictions.length)];
+        this._sign = findZodiac(this._date);
+        this._prediction = zodiacPred[Math.floor(Math.random() * zodiacPred.length)];
     }
 
-    getHTML() {
-        this._prediction = zodiacPredictions[Math.floor(Math.random() * zodiacPredictions.length)];
+    show() {
+        this._prediction = zodiacPred[Math.floor(Math.random() * zodiacPred.length)];
         return `
             <div class="block" data-id="${this._id}">
                 <h2>${this._title}</h2>
@@ -149,7 +149,7 @@ class ZodiacBlock extends Block {
         `;
     }
 
-    getEditHTML() {
+    edit() {
         const formattedDate = `${String(this._date.getDate()).padStart(2, '0')}.${String(this._date.getMonth() + 1).padStart(2, '0')}.${this._date.getFullYear()}`;
         return `
             <div class="block editable" data-id="${this._id}">
@@ -161,7 +161,7 @@ class ZodiacBlock extends Block {
     }
 }
 
-function getZodiacSign(date) {
+function findZodiac(date) {
     const day = date.getDate();
     const month = date.getMonth() + 1;
 
@@ -179,7 +179,7 @@ function getZodiacSign(date) {
     if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) return "Рыбы";
 }
 
-function parseDateFromDDMMYYYY(dateStr) {
+function readDate(dateStr) {
     const [day, month, year] = dateStr.split('.').map(Number);
     if (!day || !month || !year || day > 31 || month > 12 || year < 1) {
         throw new Error('Неверный формат даты');
@@ -187,33 +187,18 @@ function parseDateFromDDMMYYYY(dateStr) {
     return new Date(year, month - 1, day);
 }
 
-const CookieManager = {
-    setCookie(name, value, days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${date.toUTCString()}`;
-    },
-    getCookie(name) {
-        const matches = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-        return matches ? decodeURIComponent(matches[1]) : null;
-    },
-    deleteCookie(name) {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
-    }
-};
-
 class PageManager {
     constructor() {
         this.blocks = [];
         this.isEditMode = false;
-        this.profilePhoto = null;
+        this.profilePhoto = '';
         this.name = '';
         this.description = '';
         this.hobbies = '';
-        this.loadFromCookies();
+        this.load();
     }
 
-    saveToCookies() {
+    save() {
         try {
             const data = this.blocks.map(block => {
                 if (block instanceof ContactBlock) {
@@ -225,22 +210,24 @@ class PageManager {
                 }
                 return { type: 'basic', id: block._id, title: block._title, content: block._content };
             });
-            CookieManager.setCookie('blocks', JSON.stringify(data), 30);
-            CookieManager.setCookie('name', this.name, 30);
-            CookieManager.setCookie('description', this.description, 30);
-            CookieManager.setCookie('hobbies', this.hobbies, 30);
+            
+            localStorage.setItem('blocks', JSON.stringify(data));
+            localStorage.setItem('name', this.name);
+            localStorage.setItem('description', this.description);
+            localStorage.setItem('hobbies', this.hobbies);
             localStorage.setItem('profilePhoto', this.profilePhoto);
         } catch (error) {
-            console.error('Ошибка сохранения в cookies:', error);
+            console.error('Ошибка сохранения:', error);
         }
     }
 
-    loadFromCookies() {
+    load() {
         try {
-            const savedBlocks = CookieManager.getCookie('blocks');
-            const savedName = CookieManager.getCookie('name');
-            const savedDescription = CookieManager.getCookie('description');
-            const savedHobbies = CookieManager.getCookie('hobbies');
+            const savedBlocks = localStorage.getItem('blocks');
+            const savedName = localStorage.getItem('name');
+            const savedDescription = localStorage.getItem('description');
+            const savedHobbies = localStorage.getItem('hobbies');
+            const savedPhoto = localStorage.getItem('profilePhoto');
 
             if (savedBlocks) {
                 const data = JSON.parse(savedBlocks);
@@ -264,25 +251,25 @@ class PageManager {
                 ];
             }
 
-            this.profilePhoto = localStorage.getItem('profilePhoto') || 'https://via.placeholder.com/150';
+            this.profilePhoto = savedPhoto || '';
             this.name = savedName || 'Имя не указано';
             this.description = savedDescription || 'О себе: напишите что-нибудь о себе.';
             this.hobbies = savedHobbies || 'Хобби: укажите свои увлечения.';
         } catch (error) {
-            console.error('Ошибка загрузки из cookies:', error);
-            this.profilePhoto = 'https://via.placeholder.com/150';
+            console.error('Ошибка загрузки:', error);
+            this.profilePhoto = '';
         }
     }
 
-    toggleEditMode() {
+    switchMode() {
         this.isEditMode = !this.isEditMode;
         this.blocks.forEach(block => {
             if (block instanceof SkillsBlock) block.isEditMode = this.isEditMode;
         });
-        this.render();
+        this.draw();
     }
 
-    addBlock(type) {
+    add(type) {
         const id = Date.now().toString();
         switch (type) {
             case 'contact':
@@ -297,17 +284,17 @@ class PageManager {
             default:
                 this.blocks.push(new Block(id, 'Новый блок', ''));
         }
-        this.saveToCookies();
-        this.render();
+        this.save();
+        this.draw();
     }
 
-    removeBlock(id) {
+    remove(id) {
         this.blocks = this.blocks.filter(block => block._id !== id);
-        this.saveToCookies();
-        this.render();
+        this.save();
+        this.draw();
     }
 
-    updateBlock(id, data) {
+    update(id, data) {
         const block = this.blocks.find(b => b._id === id);
         if (block) {
             block._title = data.title;
@@ -315,8 +302,8 @@ class PageManager {
             if (block instanceof ContactBlock) block._phone = data.phone;
             if (block instanceof ZodiacBlock) {
                 try {
-                    block._date = parseDateFromDDMMYYYY(data.date);
-                    block._sign = getZodiacSign(block._date);
+                    block._date = readDate(data.date);
+                    block._sign = findZodiac(block._date);
                 } catch (e) {
                     console.error(e.message);
                     return;
@@ -324,60 +311,65 @@ class PageManager {
             }
             if (block instanceof SkillsBlock) {
                 block._skills = data.skills || block._skills;
-                block._usedPoints = block.calculateUsedPoints();
+                block._usedPoints = block.countPoints();
             }
-            this.saveToCookies();
+            this.save();
         }
     }
 
-    updateSkill(blockId, skill, delta) {
+    changeSkill(blockId, skill, delta) {
         const block = this.blocks.find(b => b._id === blockId);
         if (block instanceof SkillsBlock) {
             const currentPoints = block._skills[skill];
             const newPoints = Math.min(Math.max(currentPoints + delta, 0), 10);
-            const usedPoints = block.calculateUsedPoints() - currentPoints + newPoints;
+            const usedPoints = block.countPoints() - currentPoints + newPoints;
             if (usedPoints <= block._totalPoints) {
                 block._skills[skill] = newPoints;
                 block._usedPoints = usedPoints;
-                this.saveToCookies();
-                this.render();
+                this.save();
+                this.draw();
             }
         }
     }
 
-    updateProfilePhoto(photo) {
-        this.profilePhoto = photo;
-        this.saveToCookies();
-        this.render();
-    }
-
-    handlePhotoUpload(ev) {
-        const file = ev.target.files[0];
+    uploadPhoto(event) {
+        const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                this.updateProfilePhoto(e.target.result);
+                this.profilePhoto = e.target.result;
+                this.save();
+                this.draw();
             };
             reader.readAsDataURL(file);
         }
+    }
+
+    clearPhoto() {
+        this.profilePhoto = '';
+        this.save();
+        this.draw();
     }
 
     updateProfile(data) {
         this.name = data.name || this.name;
         this.description = data.description || this.description;
         this.hobbies = data.hobbies || this.hobbies;
-        this.saveToCookies();
-        this.render();
+        this.save();
+        this.draw();
     }
 
-    render() {
+    draw() {
         const profileSection = `
             <div class="profile-section">
                 <div class="profile-photo">
-                    <img src="${this.profilePhoto}" alt="Фото профиля">
+                    ${this.profilePhoto ? `<img src="${this.profilePhoto}" alt="Фото профиля">` : '<div class="no-photo">Фото отсутствует</div>'}
                     ${this.isEditMode ? `
-                        <input type="file" id="photo-upload" accept="image/*" style="margin-top: 10px;">
-                        <input type="text" id="edit-profile-photo" value="${this.profilePhoto}" placeholder="URL фото" style="margin-top: 10px;">
+                        <div class="photo-controls">
+                            <button class="upload-btn" onclick="document.getElementById('photo-upload').click()">Загрузить фото</button>
+                            <input type="file" id="photo-upload" accept="image/*" style="display: none;">
+                            ${this.profilePhoto ? `<button class="clear-btn" onclick="pageManager.clearPhoto()">Удалить фото</button>` : ''}
+                        </div>
                     ` : ''}
                 </div>
                 <div class="profile-info">
@@ -396,13 +388,13 @@ class PageManager {
 
         const header = `
             <div class="header">
-                <button onclick="pageManager.toggleEditMode()">
+                <button onclick="pageManager.switchMode()">
                     ${this.isEditMode ? 'Просмотр' : 'Редактировать'}
                 </button>
                 ${this.isEditMode ? `
-                    <button onclick="pageManager.addBlock('contact')">Добавить контакт</button>
-                    <button onclick="pageManager.addBlock('skills')">Добавить навыки</button>
-                    <button onclick="pageManager.addBlock('zodiac')">Добавить гадание</button>
+                    <button onclick="pageManager.add('contact')">Добавить контакт</button>
+                    <button onclick="pageManager.add('skills')">Добавить навыки</button>
+                    <button onclick="pageManager.add('zodiac')">Добавить гадание</button>
                 ` : ''}
             </div>
         `;
@@ -410,19 +402,19 @@ class PageManager {
         const content = this.blocks.map(block => {
             if (this.isEditMode) {
                 return `
-                    ${block.getEditHTML()}
-                    <button onclick="pageManager.removeBlock('${block._id}')">Удалить</button>
+                    ${block.edit()}
+                    <button onclick="pageManager.remove('${block._id}')">Удалить</button>
                 `;
             }
-            return block.getHTML();
+            return block.show();
         }).join('');
 
         document.body.innerHTML = `<div class="container">${profileSection + header + content}</div>`;
 
         if (this.isEditMode) {
-            const photoUploadInput = document.getElementById('photo-upload');
-            if (photoUploadInput) {
-                photoUploadInput.addEventListener('change', (e) => this.handlePhotoUpload(e));
+            const photoUpload = document.getElementById('photo-upload');
+            if (photoUpload) {
+                photoUpload.addEventListener('change', (e) => this.uploadPhoto(e));
             }
 
             document.body.addEventListener('change', (e) => {
@@ -441,9 +433,7 @@ class PageManager {
                     } else if (block instanceof SkillsBlock) {
                         data.skills = block._skills;
                     }
-                    this.updateBlock(id, data);
-                } else if (e.target.id === 'edit-profile-photo') {
-                    this.updateProfilePhoto(document.getElementById('edit-profile-photo').value);
+                    this.update(id, data);
                 } else if (e.target.id === 'edit-name' || e.target.id === 'edit-description' || e.target.id === 'edit-hobbies') {
                     this.updateProfile({
                         name: document.getElementById('edit-name').value,
@@ -458,5 +448,4 @@ class PageManager {
 
 const pageManager = new PageManager();
 window.pageManager = pageManager;
-window.CookieManager = CookieManager;
-pageManager.render();
+pageManager.draw();
