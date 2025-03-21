@@ -86,7 +86,7 @@ class SkillsBlock extends Block {
                 <p>Осталось очков: ${this._totalPoints - this._usedPoints}</p>
                 <ul class="skills-list">
                     ${Object.entries(this._skills).map(([skill, points]) => `
-                        <li title="${this._defaultSkills[skill]}">
+                        <li title="${this._defaultSkills[skill] || 'Пользовательский навык'}">
                             ${skill}: ${points}
                             ${this.isEditMode ? `
                                 <button class="skill-btn" onclick="pageManager.updateSkill('${this._id}', '${skill}', -1)">-</button>
@@ -100,7 +100,22 @@ class SkillsBlock extends Block {
     }
 
     getEditHTML() {
-        return this.getHTML();
+        return `
+            <div class="block editable" data-id="${this._id}">
+                <input type="text" class="edit-title" value="${this._title}">
+                <textarea class="edit-content">${this._content}</textarea>
+                <p>Осталось очков: ${this._totalPoints - this._usedPoints}</p>
+                <ul class="skills-list">
+                    ${Object.entries(this._skills).map(([skill, points]) => `
+                        <li title="${this._defaultSkills[skill] || 'Пользовательский навык'}">
+                            ${skill}: ${points}
+                            <button class="skill-btn" onclick="pageManager.updateSkill('${this._id}', '${skill}', -1)">-</button>
+                            <button class="skill-btn" onclick="pageManager.updateSkill('${this._id}', '${skill}', 1)">+</button>
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+        `;
     }
 }
 
@@ -214,21 +229,19 @@ class PageManager {
             CookieManager.setCookie('name', this.name, 30);
             CookieManager.setCookie('description', this.description, 30);
             CookieManager.setCookie('hobbies', this.hobbies, 30);
-
             localStorage.setItem('profilePhoto', this.profilePhoto);
-    
         } catch (error) {
             console.error('Ошибка сохранения в cookies:', error);
         }
     }
-    
+
     loadFromCookies() {
         try {
             const savedBlocks = CookieManager.getCookie('blocks');
             const savedName = CookieManager.getCookie('name');
             const savedDescription = CookieManager.getCookie('description');
             const savedHobbies = CookieManager.getCookie('hobbies');
-    
+
             if (savedBlocks) {
                 const data = JSON.parse(savedBlocks);
                 this.blocks = data.map(item => {
@@ -250,7 +263,7 @@ class PageManager {
                     new ZodiacBlock('3', 'Гадание', 'Ваше предсказание', null)
                 ];
             }
-    
+
             this.profilePhoto = localStorage.getItem('profilePhoto') || 'https://via.placeholder.com/150';
             this.name = savedName || 'Имя не указано';
             this.description = savedDescription || 'О себе: напишите что-нибудь о себе.';
@@ -260,7 +273,6 @@ class PageManager {
             this.profilePhoto = 'https://via.placeholder.com/150';
         }
     }
-    
 
     toggleEditMode() {
         this.isEditMode = !this.isEditMode;
@@ -310,6 +322,10 @@ class PageManager {
                     return;
                 }
             }
+            if (block instanceof SkillsBlock) {
+                block._skills = data.skills || block._skills;
+                block._usedPoints = block.calculateUsedPoints();
+            }
             this.saveToCookies();
         }
     }
@@ -329,22 +345,20 @@ class PageManager {
         }
     }
 
-
     updateProfilePhoto(photo) {
         this.profilePhoto = photo;
         this.saveToCookies();
         this.render();
     }
 
-
     handlePhotoUpload(ev) {
         const file = ev.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                this.updateProfilePhoto(e.target.result); 
+                this.updateProfilePhoto(e.target.result);
             };
-            reader.readAsDataURL(file); 
+            reader.readAsDataURL(file);
         }
     }
 
@@ -394,7 +408,7 @@ class PageManager {
         `;
 
         const content = this.blocks.map(block => {
-            if (this.isEditMode && !(block instanceof SkillsBlock)) {
+            if (this.isEditMode) {
                 return `
                     ${block.getEditHTML()}
                     <button onclick="pageManager.removeBlock('${block._id}')">Удалить</button>
@@ -404,7 +418,6 @@ class PageManager {
         }).join('');
 
         document.body.innerHTML = `<div class="container">${profileSection + header + content}</div>`;
-
 
         if (this.isEditMode) {
             const photoUploadInput = document.getElementById('photo-upload');
@@ -425,6 +438,8 @@ class PageManager {
                         data.phone = element.querySelector('.edit-phone').value;
                     } else if (block instanceof ZodiacBlock) {
                         data.date = element.querySelector('.edit-date').value;
+                    } else if (block instanceof SkillsBlock) {
+                        data.skills = block._skills;
                     }
                     this.updateBlock(id, data);
                 } else if (e.target.id === 'edit-profile-photo') {
