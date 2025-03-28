@@ -146,18 +146,11 @@ class ZodiacBlock extends Block {
 
     generatePrediction() {
         const predictions = [
-            "У вас рак.",
-            `Вы умрете через ${Math.floor(Math.random() * 1000)} дней. Чтобы избежать этого, закажите платное гадание.`,
             "Сегодня вас ждет удача.",
-            "Что-то не получилось, попробуйте заказать платное гадание.",
-            "Звезды говорят: закажите платное гадание.",
-            "Вас ждет большое будущее... или большое недоразумение, как повезет.",
-            `Через ${Math.floor(Math.random() * 50)} лет вы умрете.`,
-            "Вас задавит электробус через ... Чтобы узнать точную дату,закажите платное гадание ",
-            "Сатурн в ретрограде, так что не удивляйтесь, если потеряете деньги.",
-            "Ваша судьба — стать звездой.",
-            "Завтра вы проснетесь богатым, если закажите платное гадание.",
-            "Ваша карма чиста, но кошелек скоро опустеет. Спасение — в платном гадании.",
+            "Звезды говорят: будьте осторожны.",
+            "Вас ждет большое будущее.",
+            "Сатурн в ретрограде, берегите деньги.",
+            "Ваша судьба — стать звездой."
         ];
         return predictions[Math.floor(Math.random() * predictions.length)];
     }
@@ -170,9 +163,7 @@ class ZodiacBlock extends Block {
                 <p>Дата: ${this._date.toLocaleDateString('ru-RU')}</p>
                 <p>Знак зодиака: ${this._sign}</p>
                 <p>Предсказание: ${this._prediction}</p>
-                <p>Хочешь еще одно гадание? Поддержи на Binance:</p>
-                <p class="donate-address">TUJRyjKhRjns1EC7Tu6AnpLjSckVZRY2xi</p>
-                <button onclick="navigator.clipboard.writeText('TUJRyjKhRjns1EC7Tu6AnpLjSckVZRY2xi')">Скопировать адрес</button>
+                <p class = "donate-address ">Поддержать гадание: TUJRyjKhRjns1EC7Tu6AnpLjSckVZRY2xi</p>
             </div>
         `;
     }
@@ -232,9 +223,7 @@ class PageManager {
             });
         } catch (error) {
             console.error('Ошибка генерации аватаров:', error);
-            this.blogUsers.forEach(user => {
-                user.avatar = 'https://via.placeholder.com/50';
-            });
+            this.blogUsers.forEach(user => user.avatar = 'https://via.placeholder.com/50');
         }
     }
 
@@ -255,6 +244,7 @@ class PageManager {
         localStorage.setItem('hobbies', this.hobbies);
         localStorage.setItem('profilePhoto', this.profilePhoto);
         localStorage.setItem('weatherLocation', this.weatherLocation);
+        localStorage.setItem('blogPosts', JSON.stringify(this.apiData.blogPosts));
     }
 
     load() {
@@ -264,6 +254,7 @@ class PageManager {
         const savedHobbies = localStorage.getItem('hobbies');
         const savedPhoto = localStorage.getItem('profilePhoto');
         const savedWeatherLocation = localStorage.getItem('weatherLocation');
+        const savedBlogPosts = localStorage.getItem('blogPosts');
 
         if (savedBlocks) {
             const data = JSON.parse(savedBlocks);
@@ -288,6 +279,7 @@ class PageManager {
         this.description = savedDescription || 'О себе: напишите что-нибудь.';
         this.hobbies = savedHobbies || 'Хобби: укажите свои увлечения.';
         this.weatherLocation = savedWeatherLocation || 'Moscow';
+        this.apiData.blogPosts = savedBlogPosts ? JSON.parse(savedBlogPosts) : [];
     }
 
     switchMode() {
@@ -374,6 +366,12 @@ class PageManager {
 
         try {
             const photoUrl = `https://picsum.photos/200/200?random=${Date.now()}`;
+            const img = new Image();
+            img.src = photoUrl;
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = () => reject(new Error('Ошибка загрузки изображения'));
+            });
             this.profilePhoto = photoUrl;
             this.save();
         } catch (error) {
@@ -392,28 +390,22 @@ class PageManager {
         document.body.appendChild(placeholder);
 
         try {
-            const photoResponse = await fetch('https://randomuser.me/api/');
-            if (!photoResponse.ok) throw new Error('Ошибка загрузки фото');
-            const photoData = await photoResponse.json();
-            if (!photoData.results || !photoData.results[0] || !photoData.results[0].picture) {
-                throw new Error('Некорректные данные фото');
-            }
-            const photoUrl = photoData.results[0].picture.large;
-
-            const fakerResponse = await fetch('https://fakerapi.it/api/v1/persons?_quantity=1');
-            if (!fakerResponse.ok) throw new Error('Ошибка загрузки данных');
-            const fakerData = await fakerResponse.json();
-            if (!fakerData.data || !fakerData.data[0]) {
-                throw new Error('Некорректные данные FakerAPI');
-            }
-            const person = fakerData.data[0];
-            const name = `${person.firstname} ${person.lastname}`;
-            const age = Math.floor(Math.random() * (70 - 18 + 1)) + 18;
-            const location = `${person.address.city}, ${person.address.country}`;
-
-            this.apiData.photos = { url: photoUrl, name, age, location };
+            const photoUrl = `https://picsum.photos/200/200?random=${Date.now()}`;
+            const img = new Image();
+            img.src = photoUrl;
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = () => reject(new Error('Ошибка загрузки изображения'));
+            });
+            this.apiData.photos = {
+                url: photoUrl,
+                name: 'Случайное имя',
+                age: Math.floor(Math.random() * (70 - 18 + 1)) + 18,
+                location: 'Случайное место'
+            };
+            this.save();
         } catch (error) {
-            console.error('Ошибка генерации:', error);
+            console.error('Ошибка генерации фото:', error);
             this.apiData.photos = {
                 url: 'https://via.placeholder.com/150',
                 name: 'Неизвестно',
@@ -461,38 +453,86 @@ class PageManager {
         this.fetchWeather();
     }
 
-    async fetchBlogPost() {
+    async createBlogPost() {
         const placeholder = document.createElement('div');
         placeholder.className = 'placeholder';
-        placeholder.innerHTML = 'Генерация поста...';
+        placeholder.innerHTML = 'Создание поста...';
         document.body.appendChild(placeholder);
 
         try {
-            const response = await fetch('https://fish-text.ru/get?type=sentence&number=1');
-            if (!response.ok) throw new Error('Ошибка загрузки текста');
-            const data = await response.json();
+            await new Promise(resolve => setTimeout(resolve, 1000));
             const randomUser = this.blogUsers[Math.floor(Math.random() * this.blogUsers.length)];
-            const avatarUrl = `https://picsum.photos/50/50?random=${Date.now() + Math.floor(Math.random() * 1000)}`;
+            const textResponse = await fetch('https://fish-text.ru/get?type=sentence&number=1');
+            if (!textResponse.ok) throw new Error('Ошибка загрузки текста');
+            const textData = await textResponse.json();
             const newPost = {
                 id: Date.now(),
                 user: randomUser.name,
-                avatar: avatarUrl,
-                text: data.text || "Новое сообщение"
+                avatar: randomUser.avatar,
+                text: textData.text || 'Новый пост',
+                createdAt: new Date().toISOString()
             };
-
-            if (this.apiData.blogPosts.length >= 5) {
-                this.apiData.blogPosts.shift();
-            }
+            if (this.apiData.blogPosts.length >= 5) this.apiData.blogPosts.shift();
             this.apiData.blogPosts.push(newPost);
+            this.save();
         } catch (error) {
-            console.error('Ошибка генерации поста:', error);
+            console.error('Ошибка создания поста:', error);
             const randomUser = this.blogUsers[Math.floor(Math.random() * this.blogUsers.length)];
-            this.apiData.blogPosts.push({ 
-                id: Date.now(), 
+            this.apiData.blogPosts.push({
+                id: Date.now(),
                 user: randomUser.name,
                 avatar: 'https://via.placeholder.com/50',
-                text: "Ошибка при генерации сообщения." 
+                text: 'Ошибка при создании поста'
             });
+            this.save();
+        } finally {
+            document.body.removeChild(placeholder);
+            this.draw();
+        }
+    }
+
+    async updateBlogPost(id) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'placeholder';
+        placeholder.innerHTML = 'Обновление поста...';
+        document.body.appendChild(placeholder);
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const post = this.apiData.blogPosts.find(p => p.id === id);
+            if (!post) throw new Error('Пост не найден');
+            const textResponse = await fetch('https://fish-text.ru/get?type=sentence&number=1');
+            if (!textResponse.ok) throw new Error('Ошибка загрузки текста');
+            const textData = await textResponse.json();
+            post.text = textData.text || 'Обновленный пост';
+            post.updatedAt = new Date().toISOString();
+            this.save();
+        } catch (error) {
+            console.error('Ошибка обновления поста:', error);
+        } finally {
+            document.body.removeChild(placeholder);
+            this.draw();
+        }
+    }
+
+    async patchBlogPost(id) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'placeholder';
+        placeholder.innerHTML = 'Частичное обновление поста...';
+        document.body.appendChild(placeholder);
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const post = this.apiData.blogPosts.find(p => p.id === id);
+            if (!post) throw new Error('Пост не найден');
+            const newText = prompt('Введите новый текст для частичного обновления:', post.text);
+            if (newText !== null) {
+                post.text = newText;
+                post.patchedAt = new Date().toISOString();
+                this.save();
+            }
+        } catch (error) {
+            console.error('Ошибка частичного обновления:', error);
         } finally {
             document.body.removeChild(placeholder);
             this.draw();
@@ -502,12 +542,17 @@ class PageManager {
     async deleteBlogPost(id) {
         const placeholder = document.createElement('div');
         placeholder.className = 'placeholder';
-        placeholder.innerHTML = 'Удаление сообщения...';
+        placeholder.innerHTML = 'Удаление поста...';
         document.body.appendChild(placeholder);
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            this.apiData.blogPosts = this.apiData.blogPosts.filter(post => post.id !== id);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const postIndex = this.apiData.blogPosts.findIndex(p => p.id === id);
+            if (postIndex === -1) throw new Error('Пост не найден');
+            this.apiData.blogPosts.splice(postIndex, 1);
+            this.save();
+        } catch (error) {
+            console.error('Ошибка удаления поста:', error);
         } finally {
             document.body.removeChild(placeholder);
             this.draw();
@@ -516,7 +561,7 @@ class PageManager {
 
     startAutoPosting() {
         if (!this.autoPostInterval) {
-            this.autoPostInterval = setInterval(() => this.fetchBlogPost(), 8000);
+            this.autoPostInterval = setInterval(() => this.createBlogPost(), 8000);
         }
     }
 
@@ -532,9 +577,7 @@ class PageManager {
         if (page === 'photos') this.fetchPhotos();
         if (page === 'weather') this.fetchWeather();
         if (page === 'blog') {
-            if (this.apiData.blogPosts.length === 0) {
-                this.fetchBlogPost();
-            }
+            if (this.apiData.blogPosts.length === 0) this.createBlogPost();
             this.startAutoPosting();
         } else {
             this.stopAutoPosting();
@@ -658,7 +701,7 @@ class PageManager {
             content = `
                 <div class="api-section">
                     <h2>Блог</h2>
-                    <button onclick="pageManager.fetchBlogPost()">Добавить сообщение</button>
+                    <button onclick="pageManager.createBlogPost()">Добавить пост</button>
                     <div class="blog-posts">
                         ${this.apiData.blogPosts.map(post => `
                             <div class="blog-post">
@@ -670,7 +713,9 @@ class PageManager {
                                     <p>${post.text}</p>
                                 </div>
                                 <div class="blog-post-actions">
-                                    <button onclick="pageManager.deleteBlogPost(${post.id})">Удалить</button>
+                                    <button onclick="pageManager.updateBlogPost(${post.id})">Обновить (PUT)</button>
+                                    <button onclick="pageManager.patchBlogPost(${post.id})">Частично обновить (PATCH)</button>
+                                    <button onclick="pageManager.deleteBlogPost(${post.id})">Удалить (DELETE)</button>
                                 </div>
                             </div>
                         `).join('')}
