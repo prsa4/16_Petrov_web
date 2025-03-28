@@ -1,0 +1,327 @@
+@import url("reset.css");
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #ececec;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.profile-photo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-photo img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+.profile-photo input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.block {
+    width: 100%;
+    margin: 15px 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.editable:hover {
+    background: #f0f0f0;
+    cursor: pointer;
+}
+
+button {
+    margin: 5px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.skill-btn {
+    padding: 2px 8px;
+    margin: 0 5px;
+    font-size: 12px;
+}
+
+input, textarea {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+}
+
+p, ul {
+    margin: 5px 0;
+}
+
+ul.skills-list {
+    padding: 0;
+    list-style: none;
+}
+
+ul.skills-list li {
+    margin: 5px 0;
+    padding: 5px;
+    background: #e9ecef;
+    border-radius: 3px;
+    transition: background 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul.skills-list li:hover {
+    background: #ced4da;
+}
+
+.description {
+    font-style: italic;
+    color: #666;
+}
+
+
+.weather-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: linear-gradient(135deg, #72b4eb 0%, #2678c7 100%);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.weather-details {
+    flex: 1;
+}
+
+.weather-info img {
+    width: 64px;
+    height: 64px;
+}
+
+.weather-temp {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.weather-condition {
+    font-size: 16px;
+}
+
+.weather-location {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.weather-location input {
+    flex: 1;
+}
+
+.donate-address {
+    font-family: monospace;
+    background-color: #f0f0f0;
+    padding: 5px;
+    border-radius: 3px;
+}
+.blog-post {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.blog-post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.blog-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.blog-post-content {
+    margin-left: 50px;
+}
+
+.blog-post-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.photo-container {
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.photo-item {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 300px;
+}
+
+.photo-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-text {
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+.navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.navigation button {
+    flex: 1;
+    min-width: 100px;
+}
+
+.placeholder {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+@media (max-width: 480px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .container {
+        padding: 10px;
+        border-radius: 0px;
+    }
+
+    .profile-photo img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .block {
+        padding: 10px;
+        border-radius: 0px;
+    }
+
+    button {
+        width: 100%; 
+    }
+
+    input, textarea {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .skill-btn {
+        font-size: 10px;
+    }
+
+    .photo-item {
+        max-width: 100%;
+    }
+
+    .weather-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .weather-details {
+        margin-bottom: 10px;
+    }
+
+    .weather-location {
+        flex-direction: column;
+    }
+}
